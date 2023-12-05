@@ -1,13 +1,11 @@
-import { CellStates } from "./enums/CellStates";
+import { CellStates } from "../enums/CellStates";
 import React, { useEffect, useState } from "react";
-import { GameStates } from "./enums/GameStates";
-import { DIRECTIONS } from "./common/DIRECTIONS";
-import { Button, Grid, Typography } from "@mui/material";
-import { generateUniqueRandomPositions } from "./common/RandomHelper";
-import TagFacesIcon from "@mui/icons-material/TagFaces";
-import MoodBadIcon from "@mui/icons-material/MoodBad";
+import { GameStates } from "../enums/GameStates";
+import { DIRECTIONS } from "../common/DIRECTIONS";
+import { Button, Grid } from "@mui/material";
+import { generateUniqueRandomPositions } from "../common/RandomHelper";
 import CircleIcon from "@mui/icons-material/Circle";
-import SentimentSatisfiedAltIcon from "@mui/icons-material/SentimentSatisfiedAlt";
+import { GameControl } from "./GameControl";
 
 function initializeBoard(matrixSize: number) {
   const numberOfBombs = 4;
@@ -80,7 +78,7 @@ export function GameBoardGrid() {
     if (gameState !== GameStates.WIP) {
       return;
     }
-    // scanning tree using direction vector
+    // scanning tree using direction vector - BFS implementation
     const stack = [[row, col]]; // init with current location
 
     let currLocation: number[];
@@ -89,7 +87,7 @@ export function GameBoardGrid() {
 
     let totalBombsAround = 0;
 
-    const totalRounds = 10;
+    const totalRounds = 10; // should be determined by game difficulty level.
     let rounds = 0;
 
     let calcProxMatrix = [];
@@ -149,35 +147,13 @@ export function GameBoardGrid() {
   //
 
   return (
-    <div>
-      {gameState === GameStates.WIP && (
-        <div>
-          <Typography variant={"h5"}>
-            Lets Play!
-            <SentimentSatisfiedAltIcon />({toRevealCellCount} empty cells left
-            to reveal)
-          </Typography>
-        </div>
-      )}
-      {gameState === GameStates.SUCCESS && (
-        <div>
-          YAY! <TagFacesIcon />
-        </div>
-      )}
-      {gameState === GameStates.FAILED && (
-        <div>
-          BOOM!!
-          <MoodBadIcon />
-        </div>
-      )}
-      <Button
-        onClick={() => {
-          restart();
-        }}
-      >
-        RETRY
-      </Button>
-      <Grid container direction="row">
+    <Grid item container direction={"column"} spacing={2} width={"80%"}>
+      <GameControl
+        gameState={gameState}
+        toRevealCellCount={toRevealCellCount}
+        restart={restart}
+      />
+      <Grid item container direction="row">
         {matrix.map((row, rowNum) => (
           <Grid container spacing={3} key={rowNum}>
             {row.map((col: any, colNum: any) => (
@@ -202,7 +178,7 @@ export function GameBoardGrid() {
                     <CircleIcon />
                   )}
                   {col === CellStates.BOMB &&
-                    proxMatrix[rowNum][colNum] !== -1 && <div>B</div>}
+                    proxMatrix[rowNum][colNum] !== -1 && <div>pow</div>}
                   <div>
                     {proxMatrix[rowNum][colNum] !== -1 &&
                     proxMatrix[rowNum][colNum] !== 0
@@ -215,6 +191,6 @@ export function GameBoardGrid() {
           </Grid>
         ))}
       </Grid>
-    </div>
+    </Grid>
   );
 }
