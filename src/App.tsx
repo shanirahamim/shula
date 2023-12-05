@@ -3,6 +3,7 @@ import "./App.css";
 import { Button, Grid } from "@mui/material";
 import { CellStates } from "./enums/CellStates";
 import { GameStates } from "./enums/GameStates";
+import { DIRECTIONS } from "./common/DIRECTIONS";
 
 const getRandomRoundNumber = (matrixSize: number) =>
   Math.round(Math.random() * matrixSize);
@@ -33,29 +34,7 @@ function MainGrid() {
 
     const numberOfBombs = 4;
 
-    //const bombs1 = new Array(numberOfBombs);
     const bombs = generateUniqueRandomPositions(numberOfBombs, matrixSize - 1);
-    /* .filter((bomb, index, self) => {
-        // Check if the current bomb is unique by comparing it with the previous bombs
-        return (
-          index ===
-          self.findIndex(
-            (otherBomb) => bomb[0] === otherBomb[0] && bomb[1] === otherBomb[1],
-          )
-        );
-      });
-    // todo make sure they are uniuq
-    // choose bombs locations on startup
-    /*const bombs = [
-      [0, 1],
-      [0, 3],
-      [1, 4],
-      [2, 3],
-    ];*/
-    /*const bombs = [
-      [0, 1],
-      [0, 0],
-    ];*/
 
     const newBoardMatrix = new Array(matrixSize);
     const calcProxMatrix = new Array(matrixSize);
@@ -111,18 +90,6 @@ function MainGrid() {
   }
   function scan(row: any, col: any) {
     // scanning tree using direction vector
-
-    const directions = [
-      [-1, -1],
-      [-1, 0],
-      [-1, 1],
-      [0, -1],
-      [0, 1],
-      [1, 0],
-      [1, -1],
-      [1, 1],
-    ];
-
     const visited = new Array(matrixSize);
 
     for (let row = 0; row < matrixSize; row++) {
@@ -146,11 +113,8 @@ function MainGrid() {
       calcProxMatrix[row] = [...proxMatrix[row]];
     }
 
-    while (
-      stack.length && //) {
-      rounds < totalRounds
-    ) {
-      currLocation = stack.pop() as number[];
+    while (stack.length && rounds < totalRounds) {
+      currLocation = stack.shift() as number[];
 
       if (
         currLocation?.length &&
@@ -164,11 +128,10 @@ function MainGrid() {
         console.log("scan:", currLocation[0], currLocation[1]);
 
         if (currentValue == CellStates.BOMB) {
-          // throw new Error("HIT BOMB!!"); // todo handle state and allow restart
           setGameState(GameStates.FAILED);
         }
         totalBombsAround = 0;
-        directions.forEach((direction) => {
+        DIRECTIONS.forEach((direction) => {
           if (
             direction[0] + currLocation[0] >= 0 &&
             direction[0] + currLocation[0] < matrixSize &&
@@ -198,8 +161,6 @@ function MainGrid() {
     }
 
     setProxMatrix(calcProxMatrix);
-
-    console.log(calcProxMatrix);
   }
   //
 
