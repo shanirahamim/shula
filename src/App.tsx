@@ -1,11 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import "./App.css";
-import { Box } from "@mui/material";
+import { Box, Grid, Typography } from "@mui/material";
 import { GameBoardGrid } from "./GameBoardGrid";
 
 function App() {
   return (
     <Box>
+      <Grid container>
+        <Grid item>
+          <Typography variant={"h4"}>"SHULA"</Typography>
+        </Grid>
+      </Grid>
       <GameBoardGrid />
     </Box>
   );
